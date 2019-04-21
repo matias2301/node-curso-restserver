@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 
 let verificaToken = (req, res, next) => {
 
-    let token = req.get('token');
+    let token = req.query.token ? req.query.token : req.get('token');
 
     jwt.verify(token, process.env.SEED, (err, decoded) => {
 

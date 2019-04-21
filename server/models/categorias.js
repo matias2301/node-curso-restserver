@@ -18,4 +18,4 @@ let categoriaSchema = new Schema({
 
 categoriaSchema.plugin(uniqueValidator, { message: '{PATH} debe ser unico' });
 
-module.exports = mongoose.model('Categoria', categoriaSchema);
+module.exports = mongoose.model('Categorias', categoriaSchema);

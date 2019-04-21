@@ -62,14 +62,7 @@ app.post('/producto', verificaToken, (req, res) => {
             });
         }
 
-        if (!productoDB) {
-            return res.status(400).json({
-                ok: false,
-                err
-            });
-        }
-
-        res.json({
+        res.status(201).json({
             ok: true,
             producto: productoDB
         });
@@ -82,7 +75,7 @@ app.put('/producto/:id', verificaToken, (req, res) => {
     let id = req.params.id;
     let body = _.pick(req.body, ['nombre', 'precioUni', 'descripcion', 'disponible']);
 
-    Productos.findOneAndUpdate(id, body, { new: true, runValidators: true }, (err, productoDB) => {
+    Productos.findOneAndUpdate({ _id: id }, body, { new: true, runValidators: true }, (err, productoDB) => {
 
         if (err) {
             return res.status(500).json({
@@ -94,9 +87,11 @@ app.put('/producto/:id', verificaToken, (req, res) => {
         if (!productoDB) {
             return res.status(400).json({
                 ok: false,
-                err
+                err: {
+                    message: 'El ID no existe'
+                }
             });
-        }
+        };
 
         res.json({
             ok: true,
@@ -110,10 +105,10 @@ app.delete('/producto/:id', verificaToken, (req, res) => {
 
     let id = req.params.id;
     let cambiaEstado = {
-        estado: false
+        disponible: false
     };
 
-    Productos.findByIdAndRemove(id, cambiaEstado, { new: true }, (err, productoBorrado) => {
+    Productos.findOneAndUpdate({ _id: id }, cambiaEstado, { new: true }, (err, productoBorrado) => {
 
         if (err) {
             return res.status(400).json({
@@ -126,7 +121,7 @@ app.delete('/producto/:id', verificaToken, (req, res) => {
             return res.status(400).json({
                 ok: false,
                 err: {
-                    message: 'El id no existe'
+                    message: 'El ID no existe'
                 }
             });
         }

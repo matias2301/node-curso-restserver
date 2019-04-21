@@ -71,12 +71,23 @@ app.put('/usuario/:id', [verificaToken, verificaAdmin_Role], (req, res) => {
     let id = req.params.id;
     let body = _.pick(req.body, ['nombre', 'email', 'img', 'role', 'estado']);
 
-    Usuarios.findOneAndUpdate(id, body, { new: true, runValidators: true }, (err, usuarioDB) => {
+    Usuarios.findOneAndUpdate({ _id: id }, body, { new: true, runValidators: true }, (err, usuarioDB) => {
+
+        if (err) {
+            return res.status(500).json({
+                ok: false,
+                err: {
+                    message: 'Falla en la conexion a la BD'
+                }
+            });
+        }
 
         if (err) {
             return res.status(400).json({
                 ok: false,
-                err
+                err: {
+                    message: 'El ID no existe'
+                }
             });
         }
 
@@ -95,12 +106,14 @@ app.delete('/usuario/:id', [verificaToken, verificaAdmin_Role], (req, res) => {
         estado: false
     };
 
-    Usuarios.findOneAndUpdate(id, cambiaEstado, { new: true }, (err, usuarioBorrado) => {
+    Usuarios.findOneAndUpdate({ _id: id }, cambiaEstado, { new: true }, (err, usuarioBorrado) => {
 
         if (err) {
             return res.status(400).json({
                 ok: false,
-                err
+                err: {
+                    message: 'El ID no existe'
+                }
             });
         };
 

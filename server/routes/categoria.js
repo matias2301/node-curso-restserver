@@ -64,7 +64,7 @@ app.put('/categoria/:id', [verificaToken, verificaAdmin_Role], (req, res) => {
     let id = req.params.id;
     let body = req.body;
 
-    Categorias.findOneAndUpdate(id, body.descripcion, { new: true, runValidators: true }, (err, categoriaDB) => {
+    Categorias.findOneAndUpdate({ _id: id }, body.descripcion, { new: true, runValidators: true }, (err, categoriaDB) => {
 
         if (err) {
             return res.status(500).json({
@@ -92,7 +92,7 @@ app.delete('/categoria/:id', [verificaToken, verificaAdmin_Role], (req, res) => 
 
     let id = req.params.id;
 
-    Categorias.findByIdAndRemove(id, (err, categoriaBorrada) => {
+    Categorias.findOneAndRemove(id, (err, categoriaBorrada) => {
 
         if (err) {
             return res.status(400).json({
